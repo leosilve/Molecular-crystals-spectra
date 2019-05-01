@@ -1,4 +1,4 @@
-TOPDIR=..
+TOPDIR=.
 
 
 EXTLIBS_INCLUDE_DIR=boost_1_57_0 clapack/INCLUDE
@@ -10,7 +10,7 @@ LDFLAGS = -framework Accelerate -stdlib=libc++ -lc++
 
 all: models modeld bands bandd spectras spectrad
 
-models: src/PhononCloud.o src/lattice.o $(INCLUDE_DIR)/$(INCLUDE_DIR)/N_Functions.o src/sym_op.o src/pos.o $(INCLUDE_DIR)/physics.o $(INCLUDE_DIR)/OPutils.o \
+models: src/PhononCloud.o src/lattice.o $(INCLUDE_DIR)/N_Functions.o src/sym_op.o src/pos.o $(INCLUDE_DIR)/physics.o $(INCLUDE_DIR)/OPutils.o \
 	src/ME.o src/vector_per.o src/QuantumState.o src/mpstate.o src/SymmetricDoubleWell.o src/OP_model.o \
 	$(INCLUDE_DIR)/Transfer_matrix.o src/models.o 
 	$(CC) $(LDFLAGS) $^ -lm -o models.exe
