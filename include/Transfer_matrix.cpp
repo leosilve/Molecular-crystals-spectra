@@ -149,7 +149,7 @@ int check_isotropy(dComplexMatrix&  eps)
 		return(false);
 }
 
-// This routine computes the Tp(-d) matrix (see Schubert) 
+// This routine computes the Tp matrix (see Schubert) 
 // It also stores all the properties of the 4 waves propagating in the material
 // kz (kz[i] contains the value for wave i=0,..,3), 
 // polarization (pol[i] is a vector containing {Ex, Ey, Hx, Hy}, for each wave i=0,..,3)
@@ -162,7 +162,8 @@ void set_Tp(
 			  double d,
 			  vector<dComplex>& kz,
 			  vector<dComplexVector>& pol,
-			  vector<dComplexVector>& s
+			  vector<dComplexVector>& s,
+			  int info_flag       // if different from 0 data about the waves are printed on a log file
 								)
 {
 	dComplex I(0,1);
@@ -220,14 +221,16 @@ void set_Tp(
 	dComplexMatrix EigVecs(4,4);
 	dComplexMatrix* EigVecsPtr=&EigVecs;
 	CMtemp=Delta;
-	ComplexMatrixEigendecomposition(CMtemp, kz, EigVecsPtr); // kz are the 4 eigenvalues of Delta (q in Schubert's paper)
+	ComplexMatrixEigendecomposition(CMtemp, kz, EigVecsPtr);
+
+//	Eig_Delta(Delta, kz);
 
 //	cout << "kz: " << kz << endl;
 //	cout << "Delta: " << Delta;
 
 // Finds the direction of propagation of energy (vector s)
 
-	e11+=1.0*ZERO_TOL;		// This is to obtain the correct limit for isotropic materials
+	e11+=1.0*ZERO_TOL;		// This is made to obtain the correct limit for isotropic materials
 	e22+=2.0*ZERO_TOL;
 	e33+=3.0*ZERO_TOL;
 
@@ -251,9 +254,9 @@ void set_Tp(
 		for (j=0; j<3; j++)		s[i][j]/=temp;
 	}
 
-	e11-=1.0*ZERO_TOL;   // Here we restore the correct values
-	e22-=2.0*ZERO_TOL;
-	e33-=3.0*ZERO_TOL;
+	e11-=1e-10;   // Here we restore the correct values
+	e22-=2e-10;
+	e33-=3e-10;
 
 // waves propagating toward z>0 (i.e. with sz>0) are placed in the first two places of kz vector
 
@@ -285,8 +288,6 @@ void set_Tp(
 		}
 	}
 	
-// This is to find the polarisation of each wave	
-// the polarisation is the eigenvector of Delta corresponding to each eigenvalue kz
 	int rank;
 	vector<double>	SingularValues(4);
 	dComplexMatrix	Eigensystem(4,4);
@@ -423,6 +424,42 @@ void set_Tp(
 		cout << "(This alert usually appears when all the waves are evanescent: just check them)" << endl;
 	}
 
+	double angle_k, angle_s;
+	if (info_flag != 0) 
+	{
+		ofstream logfile("info.log", ios::out | ios::app);
+
+		for (i=0; i<4;i++) 
+		{
+			logfile  << "Wave " << i ;
+
+			angle_k=atan(kx/kz[i].real())*180.0/Pi;
+			angle_s=atan(s[i][0].real()/s[i][2].real())*180.0/Pi;
+
+			if ( fabs(angle_k-angle_s) < 1e-2)
+				logfile << "  Ordinary ";
+			else
+				logfile << "  ExtraOrdinary ";
+
+			if (i%2==0)
+				logfile << "  z ----> ";
+			else
+				logfile << "  <---- z ";
+
+			if ( fabs(kz[i].real()) < fabs(kz[i].imag()) )
+				logfile << "Evanescent ";
+			logfile << ":" << endl;
+
+			logfile << "k: (" << kx << ", 0, " << kz[i] << "); angle = " 
+			    <<  angle_k << endl;
+			logfile << "s: (" << s[i][0] << ", " << s[i][1] << ", " << s[i][2] << "); angle = " 
+			    <<  angle_s << endl;
+			logfile << "ex: " << pol[i][0] << ";  ey: " << pol[i][1]  
+				       << ";  hx: " << pol[i][2] << ";  hy: " << pol[i][3]<< endl;
+		}
+		logfile.close();
+	}
+
 // If the material is isotropic, equations for beta cannot be solved
 
 	if (check_isotropy(eps)) 
@@ -456,88 +493,115 @@ void set_Tp(
 	return;
 }
 
-// Computes transfer matrices (see Schubert)
-void compute_T_matrices(	vector<dComplexMatrix >&  epsilon,
-							vector<dComplexMatrix >&  Tip,
-							dComplexMatrix&  T,
-							dComplexMatrix& La,
-							dComplexMatrix& Lf,
-							vector<vector<dComplex> >& kz_vec,
-							vector<vector<dComplexVector> >& pol_vec,
-							vector<vector<dComplexVector> >& s_vec,
-							double kx,
-							double hw,
-							vector<double>& d
-							)
+// Computes matrix T (see Schubert)
+void set_T(					   vector<dComplexMatrix >&  epsilon,
+							   dComplexMatrix&  T,
+							   dComplexMatrix& La,
+							   dComplexMatrix& Lf,
+							   double kx,
+							   double hw,
+							   vector<double>& d,
+							   int info_flag
+								)
 {
-	int i, j, dim;
-	dim = d.size();
-	
-	if (epsilon.size() != dim ) 
-		nrerror("compute_T_matrices: epsilon and d are specified for a different number of media");
-	if (Tip.size() != dim ) 
-		nrerror("compute_T_matrices: Tip and d are specified for a different number of media");
-	if (La.size1() != 4 || La.size2() != 4 )
-		nrerror("compute_T_matrices: La matrix size is wrong!");	
-	if (Lf.size1() != 4 || Lf.size2() != 4 )
-		nrerror("compute_T_matrices: Lf matrix size is wrong!");
-	if (T.size1() != 4 || T.size2() != 4 )
-		nrerror("compute_T_matrices: T matrix size is wrong!");
-	for (i=0; i<dim; i++)
-		if (Tip[i].size1() != 4 || Tip[i].size2() != 4 )
-			nrerror("compute_T_matrices: Tip matrix size is wrong!");
-	if (kz_vec.size() != dim)
-		nrerror("compute_T_matrices: kz_vec  size is wrong!");
-	if (pol_vec.size() != dim)
-		nrerror("compute_T_matrices: pol_vec  size is wrong!");
-	if (s_vec.size() != dim)
-		nrerror("compute_T_matrices: s_vec  size is wrong!");
-	
+	if (epsilon.size() != d.size() ) 
+		nrerror("set_T: epsilon and d are specified for a different number of media");
+	dComplexMatrix Tp(4,4);
 	dComplexMatrix Mat_temp(4,4);
-	dComplexMatrix LaInv(4,4);
+	vector<dComplex> kz(4);
+	vector<dComplexVector> pol(4);
+	vector<dComplexVector> s(4);
 	
-	for (i=0; i<dim; i++)
+	if (La.size1() != 4 || La.size2() != 4 )
+		nrerror("set_T: La matrix size is wrong!");
+	
+	if (Lf.size1() != 4 || Lf.size2() != 4 )
+		nrerror("set_T: Lf matrix size is wrong!");
+	
+	if (T.size1() != 4 || T.size2() != 4 )
+		nrerror("set_T: T matrix size is wrong!");
+
+	int i, j,n;
+	for (i=0; i<4; i++)
 	{
-		kz_vec[i].resize(4);
-		pol_vec[i].resize(4);
-		s_vec[i].resize(4);
-		for (j=0; j<4; j++)
-		{
-			pol_vec[i][j].resize(4);
-			s_vec[i][j].resize(3);
-		}
+		pol[i].resize(4);
+		s[i].resize(3);
 	}
-	
-	// Compute Tp matrices for every layer
-	for (i=0; i<dim; i++)
-		set_Tp(Tip[i], epsilon[i], kx, hw, d[i], kz_vec[i], pol_vec[i], s_vec[i]);
-	
-	// Compute La
+		
+	ofstream logfile("info.log", ios::out | ios::app);
+		
+	if ( info_flag != 0 )		
+	{
+		logfile << endl << "-------------------------------------------------------------------" << endl;
+		logfile << "Energy : " << hw << " eV" << endl;
+		logfile << endl << "Ambient =====================" << endl;
+		logfile << "Epsilon: " << epsilon[0] << endl;
+	}
+
+	set_Tp(Tp, epsilon[0], kx, hw, d[0], kz, pol, s, info_flag);
 	
 	for (i=0; i<4; i++)	for (j=0; j<4; j++)
-		La(i,j)=pol_vec[0][j][i];
-	InvertComplexMatrix(La, LaInv);
+		La(i,j)=pol[j][i];
+
+/*	for (i=0; i<4; i++)	
+	{
+		cout << "pol " << i << " : ";
+		for (j=0; j<4; j++)
+			cout << pol[i][j] << " \t";
+		cout  << endl;
+	}*/
 	
-    // Compute Lf
+	InvertComplexMatrix(La, Mat_temp);
+	
+//	cout << "Mat_temp: " << Mat_temp << endl;
+	for (i=1; i<epsilon.size()-1; i++)
+	{	
+		if (info_flag != 0)		
+		{
+				logfile << endl << "Slab n. " << i << " =====================" << endl;
+				logfile << "Epsilon: " << epsilon[i] << endl;
+		}
+		set_Tp(Tp, epsilon[i], kx, hw, d[i], kz, pol, s, info_flag);
+//		cout << "Mat_temp:" << Mat_temp << endl;
+//		cout << "Tp:" << Tp << endl;
+		T=prod(Mat_temp,Tp);
+//		cout << "T:" << T << endl;
+		Mat_temp=T;
+//		cout << "Mat_temp (" << i << "): " << Mat_temp << endl;
+	}
+	if (info_flag != 0)		
+	{
+		logfile << endl << "Substrate =====================" << endl;
+		logfile << "Epsilon: " << epsilon.back() << endl;
+	}
+	set_Tp(Tp, epsilon.back(), kx, hw, d.back(), kz, pol, s, info_flag);
+
+/*	Older (working) version
+	for (i=0; i<4; i++)	for (j=0; j<4; j++)
+		Lf(i,j)=pol[i][j];
+	for (i=1; i<4; i+=2) for (j=0; j<4; j++) Lf(i,j)=0.0;
+	Lf=trans(Lf);*/
+	
 	for (i=0; i<4; i++)	
 	{
-		Lf(i,0)=pol_vec.back()[0][i];
+		Lf(i,0)=pol[0][i];
 		Lf(i,1)=0.0;
-		Lf(i,2)=pol_vec.back()[2][i];
+		Lf(i,2)=pol[2][i];
 		Lf(i,3)=0.0;
 	}
 	
-	// Calculates T
-	Mat_temp=Lf;
-	for (i=dim-2; i>0; i--)
+/*	for (i=0; i<4; i++)	
 	{
-		T=prod(Tip[i],Mat_temp);
-		Mat_temp=T;
-	}
-	T=prod(LaInv,Mat_temp);
+		cout << "Lf col " << i << " : ";
+		for (j=0; j<4; j++)
+			cout << Lf(j,i) << " \t";
+		cout  << endl;
+	}*/
+	
+	T=prod(Mat_temp,Lf);
+	logfile.close();
 	return;
 }
-
 
 // Rotates dMatrix M1 and puts the rotated matrix in M2
 // alpha, beta , gamma are Euler angles in degrees
@@ -788,241 +852,37 @@ double Delta(dComplexMatrix& T,
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////
-// Routine that calculates the fields 
-void compute_fields(		   int dim,									// number of media (layers+2)
+// Routine that calculates T, La and Lf  
+void compute_transfer_matrices(		   int dim,						// number of media (layers+2)
 							   vector<dComplexMatrix>  epsilon_eff,	// dielectric tensor for each layer (including ambient and final)
 							   vector<double> d,						// thickness of the n slabs (including ambient and final, which are not used)
 							   double inc_angle,						// angle of incidence (degree)
 							   double gamma,							// angle between the incident plane and xz plane (degree) 
 							   double wl,								// wavelength (in microns)
-							   dComplex As,								// Coefficient of incident s-polarised light
-							   dComplex Ap,								// Coefficient of incident p-polarised light
-							   string OutputFile						// name of the file where the fields are written
+							   vector<dComplexMatrix> Tp,				// Partial transfer matrices Tip (see Schubert's paper) 
+							   dComplexMatrix& T,						// General transfer matrix T (see Schubert's paper) 
+							   dComplexMatrix& La,						// Incident matrix La (see Schubert's paper)
+							   dComplexMatrix& Lf						// Exit matrix Lf (see Schubert's paper)
 							   )
 {
+	int i,j; 
 	if (epsilon_eff.size()!=dim || d.size()!=dim)
 		nrerror("compute_transfer_matrices: wrong input dim!");
 	if (!check_isotropy(epsilon_eff[0])) 
-		cout << "compute_transfer_matrices: ambient is not isotropic!" << endl;
+		nrerror("compute_transfer_matrices: ambient is not isotropic!");
 	if (!check_isotropy(epsilon_eff[dim-1])) 
-		cout << "compute_transfer_matrices: exit medium is not isotropic!" << endl;
+		nrerror("compute_transfer_matrices: exit medium is not isotropic!");
 	if (epsilon_eff[0](0,0).imag()>ZERO_TOL )
-		cout << "compute_transfer_matrices: ambient medium is absorbing!" << endl;
-	
-	int i,j, layer; 
-	dComplexMatrix  T(4, 4);
-	dComplexMatrix  La(4, 4); 
-	dComplexMatrix  Lf(4, 4);
-	dComplexMatrix temp(4,4);
-	vector<dComplexMatrix> Tip(dim);
-	for (i=0; i<dim; i++) 
-		Tip[i]=temp;
-	vector<vector<dComplex> > kz_vec(dim);
-	vector<vector<dComplexVector> > pol_vec(dim);
-	vector<vector<dComplexVector> > s_vec(dim);
-	
-
-	double z;
+		nrerror("compute_transfer_matrices: ambient medium is absorbing!");
 	double na=epsilon_eff[0](0,0).real();
 	double kx=na*sin(inc_angle*Pi/180.0);	// in units of k0
 	double hw=0.197*2.0*Pi/wl;				// in eV (energy is used in the set_T routine instead of wavelength)
-	double k0=2.0*Pi/wl;
-	dComplex I(0,1);
-	dComplexVector psi(4);
-	vector<dComplexVector> fields(dim-1);
-	vector<vector<dComplex> > coeff(dim);
-	vector<dComplex> vec_4x4(4*4);
-	vector<dComplex> Beta_Vec(4);
-	vector<double> z_int(dim-1);
-	ostringstream ss;
 	
 	for (i=1; i<dim-1; i++) 
 		rotate_matrix(epsilon_eff[i], epsilon_eff[i], 0.0, 0.0, -gamma);
 	
-	compute_T_matrices(epsilon_eff, Tip, T, La, Lf, kz_vec, pol_vec, s_vec, kx, hw, d);
+	set_T(epsilon_eff, T, La, Lf, kx, hw, d, 0);  // last argument is just a flag for writing info.log
 	
-	psi[0]=Cs(T, As, Ap); psi[1]=0.0; psi[2]=Cp(T, As, Ap); psi[3]=0.0;
-
-	fields[dim-2]=prod(Lf,psi);
-	for (i=dim-3; i>=0; i--)
-		fields[i]=prod(Tip[i+1],fields[i+1]);
-	
-	z_int[0]=0;
-	for (layer=1; layer<dim-1; layer++)
-		z_int[layer]=z_int[layer-1]+d[layer];
-		
-	// First medium
-	layer=0;
-	for (i=0; i<4; i++) for (j=0;j<4;j++) vec_4x4[j*4+i]=pol_vec[layer][j][i]*exp(I*k0*z_int[layer]*kz_vec[layer][j]);
-	for (j=0;j<4;j++) Beta_Vec[j]=fields[layer][j];  
-	gesv_cpp(4, 1, vec_4x4, Beta_Vec);
-	coeff[layer]=Beta_Vec;
-	// Layers
-	for (layer=1; layer<dim-1; layer++)
-	{	
-		for (i=0; i<4; i++) for (j=0;j<4;j++) vec_4x4[j*4+i]=pol_vec[layer][j][i]*exp(I*k0*z_int[layer]*kz_vec[layer][j]); 
-		for (j=0;j<4;j++) Beta_Vec[j]=fields[layer][j];  
-		gesv_cpp(4, 1, vec_4x4, Beta_Vec);
-		coeff[layer]=Beta_Vec;
-	}
-	// Exit medium
-	layer=dim-1;
-	for (i=0; i<4; i++) for (j=0;j<4;j++) vec_4x4[j*4+i]=pol_vec[layer][j][i]*exp(I*k0*z_int[layer-1]*kz_vec[layer][j]); 
-	for (j=0;j<4;j++) Beta_Vec[j]=fields[layer-1][j];  
-	gesv_cpp(4, 1, vec_4x4, Beta_Vec);
-	coeff[layer]=Beta_Vec;
-		
-	// This checks continuity
-/*	dComplexVector psi_check(4);
-	int interface;
-	
-	for (interface=0; interface<dim-1; interface++)
-	{
-		z=z_int[interface];
-		for (i=0; i<4; i++)
-		{
-			psi(i)=0.0;
-			for (j=0; j<4; j++)
-				psi(i)+=coeff[interface][j]*pol_vec[interface][j][i]*exp(I*k0*z*kz_vec[interface][j]);
-		}
-		for (i=0; i<4; i++)
-		{
-			psi_check(i)=0.0;
-			for (j=0; j<4; j++)
-				psi_check(i)+=coeff[interface+1][j]*pol_vec[interface+1][j][i]*exp(I*k0*z*kz_vec[interface+1][j]);
-		}
-		cout << psi << "\t" << psi_check << "\t" << fields[interface] << endl;
-	}
-*/
-
-	// These parameters determine the number of points in the plot
-	double zadd, zstep, thickness;
-	thickness=z_int[dim-2];
-	zstep=thickness/1000;
-	zadd=thickness/2;
-	
-	///////////////////////////////////////////////////////////////////////
-	// Computes fields and write them to file 
-		
-	ofstream fields_file;
-	ss.str("");
-	ss << OutputFile << "_fields.txt";
-	fields_file.open(ss.str().c_str());	
-	
-	fields_file << "#Note: the coordinate system is such that xz is the incidence plane" << endl;
-	fields_file << "#z (microns)\tEx\tEy\tHx\tHy\t|Ex|^2+|Ey|^2" << endl;
-	// First medium 
-	layer=0;
-	for (z=-zadd; z<0; z+=zstep)
-	{
-		fields_file << z;
-		for (i=0; i<4; i++)
-		{
-			psi(i)=0.0;
-			for (j=0; j<4; j++)
-				psi(i)+=coeff[layer][j]*pol_vec[layer][j][i]*exp(I*k0*z*kz_vec[layer][j]);
-			fields_file << "\t" << psi(i).real();
-		}
-		fields_file << "\t" << pow(abs(psi(0)),2)+pow(abs(psi(1)),2) << endl;
-	}
-	// Layers	
-	for (layer=1; layer<dim-1; layer++)
-	{
-		for (z=z_int[layer-1]; z<z_int[layer]; z+=zstep)
-		{
-			fields_file << z;
-			for (i=0; i<4; i++)
-			{
-				psi(i)=0.0;
-				for (j=0; j<4; j++)
-					psi(i)+=coeff[layer][j]*pol_vec[layer][j][i]*exp(I*k0*z*kz_vec[layer][j]);
-				fields_file << "\t" << psi(i).real();
-			}
-			fields_file << "\t" << pow(abs(psi(0)),2)+pow(abs(psi(1)),2) << endl;
-		}		
-	}
-	// Last medium
-	layer=dim-1;
-	for (z=z_int[layer-1];z<z_int[layer-1]+zadd; z+=zstep)
-	{
-		fields_file << z;
-		for (i=0; i<4; i++)
-		{
-			psi(i)=0.0;
-			for (j=0; j<4; j++)
-				psi(i)+=coeff[layer][j]*pol_vec[layer][j][i]*exp(I*k0*z*kz_vec[layer][j]);
-			fields_file << "\t" << psi(i).real();
-		}
-		fields_file << "\t" <<  pow(abs(psi(0)),2)+pow(abs(psi(1)),2) << endl;
-	}
-	fields_file.close();
-	
-	///////////////////////////////////////////////////////////////////////
-	// Writes gnuplot input to plot the layered structure 
-	
-	ofstream rect_file;
-	ss.str("");
-	ss << OutputFile << "_rect.txt";
-	rect_file.open(ss.str().c_str());
-	rect_file << "set object rect from " << -zadd << ", graph 0 to 0, graph 1 fs solid " << (sqrt(epsilon_eff[0](0,0)).real()-1)/1.5  << endl;
-	for (layer=1; layer<dim-1; layer++)
-		rect_file << "set object rect from " << z_int[layer-1] << ", graph 0 to " << z_int[layer] << ", graph 1 fs solid " << (sqrt(epsilon_eff[layer](0,0)).real()-1)/1.5  << endl;
-	rect_file << "set object rect from " << thickness << ", graph 0 to " << thickness+zadd << ", graph 1 fs solid " << (sqrt(epsilon_eff[dim-1](0,0)).real()-1)/1.5  << endl;
-	rect_file.close();
-	
-	///////////////////////////////////////////////////////////////////////
-	// Writes data about the structure and the waves
-	
-    double angle_k, angle_s;
-	d[0]=0.0;
-	d[dim-1]=0.0;
-	ofstream data_file;	
-	for (layer=0; layer<dim; layer++)
-	{
-		ss.str("");
-		ss << OutputFile << "_layer_" << layer << ".txt";
-		data_file.open(ss.str().c_str());	
-		
-		data_file << "Note: the coordinate system is such that xz is the incidence plane" << endl;
-		data_file << "Layer n. " << layer << endl;
-		data_file << "Thickness: " << d[layer] << endl;
-		data_file << "Dielectric tensor: " << epsilon_eff[layer] << endl;
-		data_file << "Wavelength: " << wl << endl;
-		data_file << "k0: " << k0 << endl;
-
-		for (i=0; i<4;i++) 
-		{
-			data_file  << endl;
-			data_file  << "Wave " << i ;
-			
-			angle_k=atan(kx/kz_vec[layer][i].real())*180.0/Pi;
-			angle_s=atan(s_vec[layer][i][0].real()/s_vec[layer][i][2].real())*180.0/Pi;
-			
-			if ( fabs(angle_k-angle_s) < 1e-2)
-				data_file << "  Ordinary ";
-			else
-				data_file << "  ExtraOrdinary ";
-			
-			if (i%2==0)
-				data_file << "  z ----> ";
-			else
-				data_file << "  <---- z ";
-			
-			if ( fabs(kz_vec[layer][i].real()) < fabs(kz_vec[layer][i].imag()) )
-				data_file << "Evanescent ";
-			data_file << ":" << endl;
-			data_file << "Coefficient: " << coeff[layer][i] << "\tabs^2 = " << pow(abs(coeff[layer][i]),2) << endl;
-			data_file << "phase @ left interface = " << arg(coeff[layer][i]*exp(I*k0*z_int[layer-1]*kz_vec[layer][i])) << endl; 
-			data_file << "phase @ right interface = " << arg(coeff[layer][i]*exp(I*k0*z_int[layer]*kz_vec[layer][i])) << endl; 
-			data_file << "k: (" << kx << ", 0, " << kz_vec[layer][i] << "); angle = " 
-			<<  angle_k << endl;
-			data_file << "s: (" << s_vec[layer][i][0] << ", " << s_vec[layer][i][1] << ", " << s_vec[layer][i][2] << "); angle = " 
-			<<  angle_s << endl;
-			data_file << "ex: " << pol_vec[layer][i][0] << ";  ey: " << pol_vec[layer][i][1]  
-			<< ";  hx: " << pol_vec[layer][i][2] << ";  hy: " << pol_vec[layer][i][3]<< endl;			
-		}
-	 data_file.close();
-	}	
 	return;
 }
 
@@ -1052,11 +912,6 @@ void spectrum_vs_energy(string DataFile,			// name of the file where epsilon dat
 	double kx=na*sin(inc_angle*Pi/180.0);
 	int i, n; 
 	int dim=3;	
-	
-	vector<dComplexMatrix> Tip(dim);
-	vector<vector<dComplex> > kz_vec(dim);
-	vector<vector<dComplexVector> > pol_vec(dim);
-	vector<vector<dComplexVector> > s_vec(dim);
 	
 	epsilon.clear();
 	epsilon_rot.clear();
@@ -1095,8 +950,7 @@ void spectrum_vs_energy(string DataFile,			// name of the file where epsilon dat
 		if (!check_symmetry(epsilon_eff[1]))
 			nrerror("spectrum_vs_energy: epsilon is not symmetric!");
 		
-//		set_T(epsilon_eff, T, La, Lf, kx, hw, d, 0);  // last argument is a flag for writing info.log
-		compute_T_matrices(epsilon_eff, Tip, T, La, Lf, kz_vec, pol_vec, s_vec, kx, hw, d);
+		set_T(epsilon_eff, T, La, Lf, kx, hw, d, 0);  // last argument is a flag for writing info.log
 		
 		//		set_iso_epsilon(epsilon_Data[0][0].real(), epsilon_eff[1]);	// background epsilon
 		//		set_T(epsilon_eff, T_background, La, Lf, kx, hw, d, 0);		// last argument is a flag for writing info.log
