@@ -1,0 +1,17 @@
+-------------------------------------------
+Input data for each run  
+-------------------------------------------
+
+Electronic molecular transition energy (in eV): 3.6
+NMODES: 1
+Lambda: 1.0
+vib_En (in eV): 0.1735896
+MAX_VIB (for each mode): 5
+FLAG_2D: 0
+CLOUD_RADIUS: 5.0
+NP : 2 	(only 1 to NP-particle states are included)
+EXP_FAC: 0.0
+FLAG_DW: 0  "DW_data_2.txt" 
+
+						
+

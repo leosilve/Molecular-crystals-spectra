@@ -1,0 +1,13 @@
+-------------------------------------------
+Input data for emission computation  
+-------------------------------------------
+Each data must be placed right after the corresponding "double dot" sign
+The z axis is normal to the sample surface
+
+hw_min: 2.8
+hw_max: 3.7
+hw_step: 0.002
+width: 0.02
+T: 0 50 100 200 300 
+em_dir: 0.52302 0.85232 0.0 0.85232 -0.52302 0.0 0.0 0.0 1.0
+kgrid: 6 6 2 

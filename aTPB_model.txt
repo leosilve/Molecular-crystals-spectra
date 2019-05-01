@@ -1,0 +1,11 @@
+Model name: 	  "aTPB_chap"
+Type of calculation: "absorption"
+Name of the lattice: "aTPB_lattice.txt"
+Basis input file: "aTPB_PC_basis.txt"
+Emission input file: "aTPB_emission_input.txt"
+Absorption input file: "aTPB_absorption_input.txt"
+
+Real H matrix (1=yes): 0
+N. of eigenvalues seeked (0=all): 0
+DCEV:	
+

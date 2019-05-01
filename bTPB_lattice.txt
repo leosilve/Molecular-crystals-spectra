@@ -1,0 +1,130 @@
+----------------------------------------------
+Monoclinic beta (Girlando) TPB crystal (bca* coordinates)
+----------------------------------------------
+
+Crystal axes (each row is an axis expressed in orthogonal coordinates):
+8.63401 0.0 0.0
+0.0 24.4801 0.0
+0.0 -1.2051 9.66109
+
+Number of molecules per cell: 4
+
+Number of crystallographic species: 1
+
+N. of symmetry operations: 4
+
+Here we put the list of the symmetry operations with 
+1. Rotation matrix
+2. Rotation axis position (in fractional coordinates)
+3. Translation (in fractional coordinates)
+4. Molecule mapping
+
+Identity:
+
+1.0 0.0 0.0
+0.0 1.0 0.0
+0.0 0.0 1.0
+
+0.0 0.0 0.0
+
+0.0 0.0 0.0
+
+0 1 2 3
+
+Screw:
+
+1.0 0.0 0.0
+0.0 -1.0 0.0
+0.0 0.0 -1.0
+
+0.0 0.25 0.0
+
+0.5 0.0 0.0
+
+1 0 3 2 
+
+Inversion:
+
+-1.0 0.0 0.0
+0.0 -1.0 0.0
+0.0 0.0 -1.0
+
+0.0 0.0 0.0
+
+0.0 0.0 0.0
+
+2 3 0 1 
+
+Glide:
+
+-1.0 0.0 0.0
+0.0 1.0 0.0
+0.0 0.0 1.0
+
+0.25 0.0 0.0
+
+0.0 0.5 0.0
+
+3 2 1 0 
+
+Position of the crystallographic molecules inside the cell 
+in fractional coordinates (0.25 0.0 0.0):
+0.244212 0.0618166 0.944573
+
+Dipole moments cosines (with respect to orthogonal coordinates):
+0.0403848 -0.996067 0.0788692
+
+Dipole moments norm (in Debye):
+8.29084
+
+Number of atomic sites: 28
+
+-0.634623	4.10598		0.725854	-0.0407099
+0.175224	2.97753		0.795953	0.0362062
+-0.544035	-4.20763	-0.616044	0.0407332
+1.11265		-3.09496	-1.92632	0.0391622
+-0.546251	5.10939		1.67704		-0.000510385
+1.18598		3.91576		2.788		-0.00116456
+1.10277		2.90948		1.83646		-0.0391389
+-0.328429	2.21105		-1.57787	0.0210857
+0.0147385	1.85628		-0.169171	-0.156865
+0.169816	0.589776	0.269129	0.0962887
+0.150151	-0.637558	-0.485641	-0.0962745
+0.872434	-3.05634	2.13289		0.0294813
+0.244035	-3.07477	-0.844238	-0.0362213
+0.0287345	-2.13715	1.50197		-0.0210451
+1.18794		-4.19145	-2.76181	0.00115474
+-0.899203	-1.47638	2.30116		0.0233777
+0.143037	-1.89059	0.0439743	0.156864
+-1.32551	1.54721		-2.28428	-0.0233948
+-0.491201	-5.28507	-1.47876	0.000501756
+0.354276	3.24132		-2.22601	-0.0295081
+0.076783	3.57327		-3.5343		-0.0030522
+0.810174	-3.25886	3.49506		0.00305927
+0.351393	5.00758		2.71065		-0.0513954
+-1.6098		1.89315		-3.59605	-0.000174416
+-0.942384	-1.68555	3.67059		0.000186981
+-0.905682	2.89671		-4.22384	-0.0303105
+0.374271	-5.28037	-2.54575	0.0514477
+-0.0873343	-2.56559	4.27093		0.0302484
+
+MODE: "M" (Case 'F' -> Finite_sums; case 'S' -> Single_layer_sums; 'M'-> Mixed finite charge dist + Ewald; default -> Ewald_sums)
+MOL_MOL_INT: "T" (Type of interaction "N"= nearest neighbors; "T"=screend distributed transition charge; default=screened_dipole;
+NON_SCR_RADIUS: 0.0
+RMAX: 50.0  (radius of the sphere used for finite sum calculations)
+KLIGHT: 0.0 0.0 0.0016  (k vector of incident light, used to compute bands at the BZ center in the 3D grid mode, corresponds to hw = |KLIGHT|*1970) 
+
+Static epsilon:
+2.0 0.0 0.0
+0.0 2.0 0.0
+0.0 0.0 2.0
+
+-------------------------------------------------------------------------
+Nearest neighbours (NN) interactions, used if mol_mol_int is set to 'N'
+-------------------------------------------------------------------------
+NN_int N_MOL: 0    (must be equal to the number of molecules in the unit cell, if different NN interactions are set to 0)
+NN_int size:  0    (number of NN interactions for each unit cell molecule)
+NN_int interactions for each molecule (in eV): 
+
+(here you must supply a list of all the interaction energies of each unit cell molecule with all the relevant NN molecules, 
+the list must contain N_MOL*size energies)
