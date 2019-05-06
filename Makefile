@@ -34,17 +34,7 @@ spectras: $(INCLUDE_DIR)/N_Functions.o $(INCLUDE_DIR)/physics.o $(INCLUDE_DIR)/O
 spectrad: $(INCLUDE_DIR)/N_Functions.o $(INCLUDE_DIR)/physics.o $(INCLUDE_DIR)/OPutils.o $(INCLUDE_DIR)/Transfer_matrix.o src/spectrad.o
 	$(CC) $(LDFLAGS) $^ -lm -o spectrad.exe
 
-PC: src/PhononCloud.o src/lattice.o $(INCLUDE_DIR)/N_Functions.o src/sym_op.o src/pos.o $(INCLUDE_DIR)/physics.o $(INCLUDE_DIR)/OPutils.o \
-	src/ME.o src/vector_per.o src/QuantumState.o src/mpstate.o src/SymmetricDoubleWell.o src/PC_main.o
-	$(CC) $(LDFLAGS) $^ -lm -o PC.exe 
 
-test: src/PhononCloud.o src/lattice.o $(INCLUDE_DIR)/N_Functions.o src/sym_op.o src/pos.o $(INCLUDE_DIR)/physics.o $(INCLUDE_DIR)/OPutils.o \
-	src/ME.o src/vector_per.o src/QuantumState.o src/mpstate.o src/SymmetricDoubleWell.o src/OP_model.o \
-	$(INCLUDE_DIR)/Transfer_matrix.o src/test_main.o 
-	$(CC) $(LDFLAGS) $^ -lm -o test.exe
-
-
-	
 %.o: %.cpp
 	$(CC) $(CXXFLAGS) -c $< -o $@
 
