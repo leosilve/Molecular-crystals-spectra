@@ -18,7 +18,13 @@ namespace vector_per_mod
 //using namespace vector_per_mod;
 
 ///////////////////////////////////////////////////////////////////////////
-/////////    Periodic vector 3D class (inheritance from vector class)
+///    Periodic vector 3D class (inheritance from vector class).
+///
+///    It defines a 3D vector in terms of its integer coefficients
+///    n1, n2 and n3 over an orthogonal basis. The period is N1, N2 and N3, 
+///    respectively in the three directions. It is used for the 
+///	   MultiPhonon basis set.
+///////////////////////////////////////////////////////////////////////////
 
 class vector_per : public std::vector<int>
 {

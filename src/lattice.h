@@ -20,7 +20,10 @@
 namespace ublas = boost::numeric::ublas;
 
 //////////////////////////////////////////
-/////////     Lattice class 	 /////////
+///     Molecular crystal's lattice.
+///
+///		It defines all the properties of the molecular crystal's lattice
+///
 //////////////////////////////////////////
 
 template <typename LATFLOAT>
@@ -36,31 +39,34 @@ class lattice {
 protected:
 
  // Lattice parameters.
-	int				N_MOL;			// Number of molecules per cell
-	int				N_SP;			// Number of crystallographic species
-	int				N_SYM_OP;		// Number of symmetry operations
-	std::string		lattice_name;	// Name used for the lattice .log file
-	std::vector<sym_op<LATFLOAT> >		SYM;			// Symmetry operations
-	Matrix								epsilon_0;		// Static epsilon (used for screening)
-	std::vector<Vector>					RHO;			// Molecular positions inside the unit cell in orthogonal coordinates
-	std::vector<Vector>					MOL_DIPOLE;		// Molecular dipole moments
-	std::vector<std::vector<Vector> >	ATOM;			// Atomic positions with respect to the CoM
-	std::vector<std::vector<LATFLOAT> >	CHARGE;			// Atomic "transition" charges
- 	std::vector<Vector>					CELL;			// Crystal axes
-	std::vector<Vector>					KCELL;			// Reciprocal lattice vectors
-	LATFLOAT							VCELL;			// Cell volume
-	std::string							MODE;
-	std::string							MOL_MOL_INT;
+	int				N_MOL;			///< Number of molecules per cell
+	int				N_SP;			///< Number of crystallographic species
+	int				N_SYM_OP;		///< Number of symmetry operations
+	std::string		lattice_name;	///< Name used for the lattice .log file
+	std::vector<sym_op<LATFLOAT> >		SYM;			///< Symmetry operations
+	Matrix								epsilon_0;		///< Static epsilon (used for screening)
+	std::vector<Vector>					RHO;			///< Molecular positions inside the unit cell in orthogonal coordinates
+	std::vector<Vector>					MOL_DIPOLE;		///< Molecular dipole moments
+	std::vector<std::vector<Vector> >	ATOM;			///< Atomic positions with respect to the CoM
+	std::vector<std::vector<LATFLOAT> >	CHARGE;			///< Atomic "transition" charges
+ 	std::vector<Vector>					CELL;			///< Crystal axes
+	std::vector<Vector>					KCELL;			///< Reciprocal lattice vectors
+	LATFLOAT							VCELL;			///< Cell volume
+	std::string							MODE; 			///< Case 'F' -> Finite_sums; case 'S' -> Single_layer_sums; 
+														///< 'M'-> Mixed finite charge dist + Ewald; default -> Ewald_sums
+	std::string							MOL_MOL_INT;	///< Type of interaction "N"= nearest neighbors; 
+														///< "T"=screend distributed transition charge; default=screened_dipole;
 	LATFLOAT							NON_SCR_RADIUS;
-	LATFLOAT							RMAX;
-	Vector								KLIGHT;
-	std::vector<std::vector<LATFLOAT> > NN_int;			// Nearest neighbours interactions
+	LATFLOAT							RMAX;			///< Radius of the sphere used for finite sum calculations
+	Vector								KLIGHT;         ///< k vector of incident light, used to compute bands at the BZ center 
+														///< in the 3D grid mode, corresponds to hw = |KLIGHT|*1970
+	std::vector<std::vector<LATFLOAT> > NN_int;			///< Nearest neighbours interactions
 
 // Internal variables
 
-	std::vector<std::vector<pos<LATFLOAT> > >	NN;			// NN contains the nearest neighbours positions (a 3d vector) 
-															// for each type of molecule (1st index) and each neighbour (2nd index)
-	Matrix										OtoF;		// Matrix for transformation from Orthogonal to Fractional coordinates
+	std::vector<std::vector<pos<LATFLOAT> > >	NN;			///< NN contains the nearest neighbours positions (a 3d vector) 
+															///< for each type of molecule (1st index) and each neighbour (2nd index)
+	Matrix										OtoF;		///< Matrix for transformation from Orthogonal to Fractional coordinates
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Utilities
@@ -102,16 +108,16 @@ protected:
 
 	Complex Finite_sums(int flag_2D, Vector k, int alpha, int beta);
 
-// This routine DOES NOT exploit inversion symmetry
+    ///< This routine DOES NOT exploit inversion symmetry
 	Complex Correction_to_Ewald_sums(Vector k, int alpha, int beta);
 	
-	// Computes free exciton bands along given directions
-	void compute_FE_bands(std::vector<Vector> dir,  int npoints, int n0,  int n1,  int n2, int flag_macro);
-
-
-// Interaction between transition charge distributions 
-// r is the distance between the center of mass of the two molecules
-	LATFLOAT distributed_charge_interaction(int alpha, int beta, Vector rba);
+	///< Computes free exciton bands along given directions
+	void compute_FE_bands(std::vector<Vector> dir,  int npoints, int n0,  int n1,  int n2, int flag_macro); 
+	
+	///< Interaction between transition charge distributions 
+    ///< r is the distance between the center of mass of the two molecules
+	LATFLOAT distributed_charge_interaction(int alpha, int beta, Vector rba); 
+	
 
 	LATFLOAT screened_distributed_charge_interaction(int alpha, int beta, Vector rba, 
 													 LATFLOAT e00, LATFLOAT e11, LATFLOAT e22);
@@ -121,7 +127,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////
 // Constructors and destructor.
 
-// Read from file constructor.
+	/// Reads lattice data from file
 	lattice(std::string input_file) {initialize(input_file); }
 	virtual ~lattice(void) {return;};
 
@@ -234,14 +240,14 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////
 // Public functions
 
-	void print(std::ofstream& log_file);
+	void print(std::ofstream& log_file); ///< Prints information about the lattice to file
 	std::vector<std::vector<pos<LATFLOAT> > > compute_NN(LATFLOAT rmax, int flag_2D);
 	//	void set_NN(std::vector<std::vector<pos<LATFLOAT> > > new_NN);	
 	//	void set_lattice_name(std::string _lattice_name) { if (_lattice_name.length() != 0) lattice_name=_lattice_name; };
-	LATFLOAT interaction( int alpha, int beta, Vector dr);	// Interaction between molecules of type alpha and beta at a distance dr (3D vector)
-	LATFLOAT interaction( int alpha, int nn);				// Interaction between a molecule of type alpha and its nnth nearest neighboour 
+	LATFLOAT interaction( int alpha, int beta, Vector dr);	///< Interaction between molecules of type alpha and beta at a distance dr (3D vector)
+	LATFLOAT interaction( int alpha, int nn);				///< Interaction between a molecule of type alpha and its nnth nearest neighboour 
 
-	// flag_macro is passed to the routine Ewald_sums (if used)
+	///< flag_macro is passed to the routine Ewald_sums (if used)
 	Complex compute_Ltilde(Vector kvec, int i, int j, int flag_macro);
 
 	void computes_lattice_bands(std::string& band_input_file);
