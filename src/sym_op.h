@@ -18,11 +18,15 @@ namespace ublas = boost::numeric::ublas;
 ///     Symmetry operations.
 ///
 ///     Symmetry operation of the molecular crystal defined by
-///     - Rotation matrix
-///     - Rotation axis position (in fractional coordinates)
-///     - Translation (in fractional coordinates)
-///     - Molecule mapping
+///     - Matrix rot: 3x3 rotation matrix
+///     - Vector ax: rotation axis position (in fractional coordinates)
+///     - Vector tr: translation (in fractional coordinates)
+///     - std::vector<int> map: molecule mapping
 ///
+///     Note: the molecule mapping vector map is a vector of integers
+///     where the value of the i-th component indicates the non equivalent
+///     molecular position inside the unit cell into which molecule i-th
+///     is transformed by the symmetry operation.
 ///////////////////////////////////////////////////////////////////////////
 template <class FLOAT>
 class sym_op {
@@ -36,7 +40,6 @@ private:
 	Vector		tr;
 	std::vector<int>	map;
 public:
-
 	void set_rot(Matrix _rot)	{rot=_rot; };
 	void set_ax(Vector _ax)		{ax=_ax; };
 	void set_tr(Vector _tr)		{tr=_tr; };
@@ -54,15 +57,13 @@ public:
 	void apply(pos<FLOAT> &ini, pos<FLOAT> &fin);
 	void apply(pos<FLOAT> &p);
 
+    /// Short constructor: initialises the object with the Identity
 	sym_op()
 	{
-		Matrix		rot(3,3); ///< Rotation matrix 3x3
-		Vector		ax(3);  ///< Rotation axis position (in fractional coordinates)
-		Vector		tr(3);  ///< Translation (in fractional coordinates)
-        std::vector<int>	map(0); ///< Molecule mapping. This is a vector of integers
-                                    ///< where the value of the i-th component indicates the non equivalent
-                                    ///< molecular position inside the unit cell into which molecule i-th is transformed by the symmetry operation
-
+		Matrix		rot(3,3);
+		Vector		ax(3);
+		Vector		tr(3);
+        std::vector<int>	map(0);
 		for (unsigned i=0; i < rot.size1(); ++i)
 		{
 			ax(i)=0.0;
