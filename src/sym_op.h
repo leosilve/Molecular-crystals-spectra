@@ -15,9 +15,16 @@
 namespace ublas = boost::numeric::ublas;
 
 ///////////////////////////////////////////////////////////////////////////
-/////////     class sym_op    (symmetry operation)				  /////////
+///     Symmetry operations.
+///
+///     Symmetry operation of the molecular crystal defined by
+///     - Rotation matrix
+///     - Rotation axis position (in fractional coordinates)
+///     - Translation (in fractional coordinates)
+///     - Molecule mapping
+///     This class is used by the "lattice" class and in various calculations
+///     to take advantage of symmetry operations and reduce the size of the matrices to be diagonalised
 ///////////////////////////////////////////////////////////////////////////
-
 template <class FLOAT>
 class sym_op {
 
@@ -25,10 +32,12 @@ class sym_op {
 	typedef ublas::vector<FLOAT>						Vector;
 
 private:
-	Matrix		rot;
-	Vector		ax;
-	Vector		tr;
-	std::vector<int>	map;
+	Matrix		rot; ///< Rotation matrix 3x3
+	Vector		ax;  ///< Rotation axis position (in fractional coordinates)
+	Vector		tr;  ///< Translation (in fractional coordinates)
+	std::vector<int>	map; ///< Molecule mapping. This is a vector of integers
+                             ///< where the value of the i-th component indicates the non equivalent
+                             ///< molecular position inside the unit cell into which molecule i-th is transformed by the symmetry operation
 
 public:
 
