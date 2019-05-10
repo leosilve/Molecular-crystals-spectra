@@ -68,6 +68,11 @@ $(function() {
 <div class="title">sym_op&lt; FLOAT &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Symmetry operations.  
+ <a href="classsym__op.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="sym__op_8h_source.html">sym_op.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -117,7 +122,18 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>apply</b> (<a class="
 &#160;</td><td class="memItemRight" valign="bottom"><b>sym_op</b> (Matrix &amp;_rot, Vector &amp;_ax, Vector &amp;_tr, std::vector&lt; int &gt; &amp;_map)</td></tr>
 <tr class="separator:a991d81306150cd0d83112689b16ee8d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class FLOAT&gt;<br />
+class sym_op&lt; FLOAT &gt;</h3>
+
+<p>Symmetry operations. </p>
+<p>Symmetry operation of the molecular crystal defined by</p><ul>
+<li>Rotation matrix</li>
+<li>Rotation axis position (in fractional coordinates)</li>
+<li>Translation (in fractional coordinates)</li>
+<li>Molecule mapping This class is used by the "lattice" class and in various calculations to take advantage of symmetry operations and reduce the size of the matrices to be diagonalised </li>
+</ul>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/<a class="el" href="sym__op_8h_source.html">sym_op.h</a></li>
 <li>src/sym_op.cpp</li>
 </ul>
