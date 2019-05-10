@@ -61,20 +61,22 @@ void set_Tp(
 			double d,
 			std::vector<dComplex>& kz,
 			std::vector<dComplexVector>& pol,
-			std::vector<dComplexVector>& s,
-			int info_flag       // if different from 0 data about the waves are printed on a log file
+			std::vector<dComplexVector>& s
 			);
 
-// Computes matrix T (see Schubert)
-void set_T(					   std::vector<dComplexMatrix >&  epsilon,
-							   dComplexMatrix&  T,
-							   dComplexMatrix& La,
-							   dComplexMatrix& Lf,
-							   double kx,
-							   double hw,
-							   std::vector<double>& d,
-							   int info_flag
-		   );
+// Computes transfer matrices (see Schubert)
+void compute_T_matrices(std::vector<dComplexMatrix >&  epsilon,
+						std::vector<dComplexMatrix >&  Tip,
+						dComplexMatrix&  T,
+						dComplexMatrix& La,
+						dComplexMatrix& Lf,
+						std::vector<std::vector<dComplex > >& kz_vec,
+						std::vector<std::vector<dComplexVector > >& pol_vec,
+						std::vector<std::vector<dComplexVector > >& s_vec,
+						double kx,
+						double hw,
+						std::vector<double>& d
+						);
 
 // Rotates dMatrix M1 and puts the rotated matrix in M2
 // alpha, beta , gamma are Euler angles in degrees
@@ -145,6 +147,20 @@ double  Tp_coeff(	  dComplexMatrix& T,
 				 dComplexMatrix& Lf,
 				 dComplex As, 
 				 dComplex Ap);
+
+///////////////////////////////////////////////////////////////////////////////////////////
+// Routine that computes electromagnetic fields and prints info anout waves in each layer
+// Fields are in the frame of reference given by the incidence plane
+void compute_fields(	int dim,						// number of media (layers+2)
+					std::vector<dComplexMatrix>  epsilon_eff,	// dielectric tensor for each layer (including ambient and final)
+					std::vector<double> d,						// thickness of the n slabs (including ambient and final, which are not used)
+					double inc_angle,						// angle of incidence (degree)
+					double gamma,							// angle between the incident plane and xz plane (degree) 
+					double wl,								// wavelength (in microns)
+					dComplex As,
+					dComplex Ap,
+					std::string OutputFile
+					);
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // Example of a routine that computes absorption for a slab 
