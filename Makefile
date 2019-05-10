@@ -1,11 +1,9 @@
-TOPDIR=.
-
-
-EXTLIBS_INCLUDE_DIR=boost_1_57_0 clapack/INCLUDE
-INCLUDE_DIR=$(TOPDIR)/include
+BOOST_INCLUDE_DIR=~/Cpp/ExtLibs/boost_1_57_0 
+CLAPACK_INCLUDE_DIR=~/Cpp/ExtLibs/clapack/INCLUDE
+INCLUDE_DIR=include
 
 CC=gcc
-CXXFLAGS=-I $(INCLUDE_DIR) -I src $(addprefix -I$(TOPDIR)/ExtLibs/, $(EXTLIBS_INCLUDE_DIR)) -Wall
+CXXFLAGS=-I $(INCLUDE_DIR) -I src -I $(BOOST_INCLUDE_DIR) -I $(CLAPACK_INCLUDE_DIR) -Wall
 LDFLAGS = -framework Accelerate -stdlib=libc++ -lc++ 
 
 all: models modeld bands bandd spectras spectrad
