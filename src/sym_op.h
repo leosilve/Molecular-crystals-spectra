@@ -22,8 +22,7 @@ namespace ublas = boost::numeric::ublas;
 ///     - Rotation axis position (in fractional coordinates)
 ///     - Translation (in fractional coordinates)
 ///     - Molecule mapping
-///     This class is used by the "lattice" class and in various calculations
-///     to take advantage of symmetry operations and reduce the size of the matrices to be diagonalised
+///
 ///////////////////////////////////////////////////////////////////////////
 template <class FLOAT>
 class sym_op {
@@ -32,13 +31,10 @@ class sym_op {
 	typedef ublas::vector<FLOAT>						Vector;
 
 private:
-	Matrix		rot; ///< Rotation matrix 3x3
-	Vector		ax;  ///< Rotation axis position (in fractional coordinates)
-	Vector		tr;  ///< Translation (in fractional coordinates)
-	std::vector<int>	map; ///< Molecule mapping. This is a vector of integers
-                             ///< where the value of the i-th component indicates the non equivalent
-                             ///< molecular position inside the unit cell into which molecule i-th is transformed by the symmetry operation
-
+	Matrix		rot;
+	Vector		ax;
+	Vector		tr;
+	std::vector<int>	map;
 public:
 
 	void set_rot(Matrix _rot)	{rot=_rot; };
@@ -60,10 +56,13 @@ public:
 
 	sym_op()
 	{
-		Matrix		rot(3,3);
-		Vector		ax(3);
-		Vector		tr(3);
-		std::vector<int>	map(0);
+		Matrix		rot(3,3); ///< Rotation matrix 3x3
+		Vector		ax(3);  ///< Rotation axis position (in fractional coordinates)
+		Vector		tr(3);  ///< Translation (in fractional coordinates)
+        std::vector<int>	map(0); ///< Molecule mapping. This is a vector of integers
+                                    ///< where the value of the i-th component indicates the non equivalent
+                                    ///< molecular position inside the unit cell into which molecule i-th is transformed by the symmetry operation
+
 		for (unsigned i=0; i < rot.size1(); ++i)
 		{
 			ax(i)=0.0;
