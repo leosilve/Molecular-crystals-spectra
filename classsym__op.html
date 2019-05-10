@@ -118,6 +118,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>apply</b> (<a class="
 <tr class="memitem:a2fc0bda07be154092bc26f4e4fa1de36"><td class="memItemLeft" align="right" valign="top"><a id="a2fc0bda07be154092bc26f4e4fa1de36"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>apply</b> (<a class="el" href="structpos.html">pos</a>&lt; FLOAT &gt; &amp;p)</td></tr>
 <tr class="separator:a2fc0bda07be154092bc26f4e4fa1de36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f205f5f7d9f73dccb09094db477316d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__op.html#a1f205f5f7d9f73dccb09094db477316d">sym_op</a> ()</td></tr>
+<tr class="separator:a1f205f5f7d9f73dccb09094db477316d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a991d81306150cd0d83112689b16ee8d4"><td class="memItemLeft" align="right" valign="top"><a id="a991d81306150cd0d83112689b16ee8d4"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>sym_op</b> (Matrix &amp;_rot, Vector &amp;_ax, Vector &amp;_tr, std::vector&lt; int &gt; &amp;_map)</td></tr>
 <tr class="separator:a991d81306150cd0d83112689b16ee8d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -131,9 +133,41 @@ class sym_op&lt; FLOAT &gt;</h3>
 <li>Rotation matrix</li>
 <li>Rotation axis position (in fractional coordinates)</li>
 <li>Translation (in fractional coordinates)</li>
-<li>Molecule mapping This class is used by the "lattice" class and in various calculations to take advantage of symmetry operations and reduce the size of the matrices to be diagonalised </li>
+<li>Molecule mapping <pre class="fragment"></pre> </li>
 </ul>
-</div><hr/>The documentation for this class was generated from the following files:<ul>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a1f205f5f7d9f73dccb09094db477316d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f205f5f7d9f73dccb09094db477316d">&#9670;&nbsp;</a></span>sym_op()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class FLOAT&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classsym__op.html">sym_op</a>&lt; FLOAT &gt;::<a class="el" href="classsym__op.html">sym_op</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>&lt; Rotation matrix 3x3</p>
+<p>&lt; Rotation axis position (in fractional coordinates)</p>
+<p>&lt; Translation (in fractional coordinates)</p>
+<p>&lt; Molecule mapping. This is a vector of integers where the value of the i-th component indicates the non equivalent molecular position inside the unit cell into which molecule i-th is transformed by the symmetry operation </p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/<a class="el" href="sym__op_8h_source.html">sym_op.h</a></li>
 <li>src/sym_op.cpp</li>
 </ul>
