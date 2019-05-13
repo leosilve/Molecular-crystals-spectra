@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lattice',['lattice',['../classlattice.html#a0e003a4d97004dd6fadfea47f75fd4f7',1,'lattice']]]
+  ['finite_5fsums',['Finite_sums',['../classlattice.html#ae5f2cf7f125b68ad18c7c952abbe22c1',1,'lattice']]]
 ];

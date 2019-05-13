@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['compute_5ffe_5fbands',['compute_FE_bands',['../classlattice.html#a5897223ed8d427efd481d88bbcb1bd40',1,'lattice']]],
-  ['correction_5fto_5fewald_5fsums',['Correction_to_Ewald_sums',['../classlattice.html#a7c291d2a723a959f401f599d3a07b981',1,'lattice']]]
+  ['apply',['apply',['../classsym__op.html#a1e0c66ef01819225155d7fa14400c080',1,'sym_op::apply(pos&lt; FLOAT &gt; &amp;ini, pos&lt; FLOAT &gt; &amp;fin)'],['../classsym__op.html#a2fc0bda07be154092bc26f4e4fa1de36',1,'sym_op::apply(pos&lt; FLOAT &gt; &amp;p)']]]
 ];

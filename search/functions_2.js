@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['get_5fmap',['get_map',['../classsym__op.html#a451305f2010f369d664dd4abc4087794',1,'sym_op']]]
+  ['distributed_5fcharge_5finteraction',['distributed_charge_interaction',['../classlattice.html#ad3cac006933863ca1733b92af2b12947',1,'lattice']]]
 ];
