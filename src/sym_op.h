@@ -43,9 +43,9 @@ public:
 	void set_rot(Matrix _rot)	{rot=_rot; };
 	void set_ax(Vector _ax)		{ax=_ax; };
 	void set_tr(Vector _tr)		{tr=_tr; };
-	void set_map(int i, int n)	{map[i]=n; };
+	void set_map(int i, int n)	{map[i]=n; }; ///< map[i]=n
 	void set_map(std::vector<int> _map) {map=_map; };
-	void set_map_size(int n) {map.resize(n); };
+	void set_map_size(int n) {map.resize(n); }; ///< map.resize(n)
 	
 	std::vector<int>		get_map()		const { return(map); };
 	int				get_map(int i)	const { return(map[i]); };
@@ -71,9 +71,10 @@ public:
 			for (unsigned j=0; j<rot.size2(); ++j)
 				rot(i,j)=0.0;
 		}
-	};	// Short constructor
+	};
 	
-	sym_op(Matrix &_rot, Vector &_ax, Vector &_tr, std::vector<int> &_map); // Long constructor
+    /// Long constructor
+	sym_op(Matrix &_rot, Vector &_ax, Vector &_tr, std::vector<int> &_map);
 };
 
 
