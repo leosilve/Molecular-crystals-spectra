@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['lattice',['lattice',['../classlattice.html',1,'lattice&lt; LATFLOAT &gt;'],['../classlattice.html#a0e003a4d97004dd6fadfea47f75fd4f7',1,'lattice::lattice()']]],
-  ['lattice_3c_20float_20_3e',['lattice&lt; FLOAT &gt;',['../classlattice.html',1,'']]],
-  ['lattice_5fname',['lattice_name',['../classlattice.html#a1afa7ed5b43a996e0c7487adf39b3c8a',1,'lattice']]]
+  ['kcell',['KCELL',['../classlattice.html#ae2a2473a93080acad9e79d36cf6bef9a',1,'lattice']]],
+  ['klight',['KLIGHT',['../classlattice.html#a85d87c5be7223f0e32ea4f905988269e',1,'lattice']]]
 ];

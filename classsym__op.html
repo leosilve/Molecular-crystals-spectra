@@ -89,13 +89,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>set_tr</b> (Vector _t
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_map</b> (int i, int n)</td></tr>
 <tr class="separator:a7a7ab73235526983e2c6a553e57fd866"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8bdfee1bdd954dc1ecdd37ce142cd4bf"><td class="memItemLeft" align="right" valign="top"><a id="a8bdfee1bdd954dc1ecdd37ce142cd4bf"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>set_map</b> (std::vector&lt; int &gt; _map)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__op.html#a8bdfee1bdd954dc1ecdd37ce142cd4bf">set_map</a> (std::vector&lt; int &gt; _map)</td></tr>
+<tr class="memdesc:a8bdfee1bdd954dc1ecdd37ce142cd4bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">map[i]=n <br /></td></tr>
 <tr class="separator:a8bdfee1bdd954dc1ecdd37ce142cd4bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adabc4afab5e7b703e051177fabb77814"><td class="memItemLeft" align="right" valign="top"><a id="adabc4afab5e7b703e051177fabb77814"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>set_map_size</b> (int n)</td></tr>
 <tr class="separator:adabc4afab5e7b703e051177fabb77814"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a451305f2010f369d664dd4abc4087794"><td class="memItemLeft" align="right" valign="top"><a id="a451305f2010f369d664dd4abc4087794"></a>
-std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>get_map</b> () const</td></tr>
+std::vector&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__op.html#a451305f2010f369d664dd4abc4087794">get_map</a> () const</td></tr>
+<tr class="memdesc:a451305f2010f369d664dd4abc4087794"><td class="mdescLeft">&#160;</td><td class="mdescRight">map.resize(n) <br /></td></tr>
 <tr class="separator:a451305f2010f369d664dd4abc4087794"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd433a3222ea52980a39926d61cbab71"><td class="memItemLeft" align="right" valign="top"><a id="acd433a3222ea52980a39926d61cbab71"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>get_map</b> (int i) const</td></tr>
@@ -118,10 +120,13 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>apply</b> (<a class="
 <tr class="memitem:a2fc0bda07be154092bc26f4e4fa1de36"><td class="memItemLeft" align="right" valign="top"><a id="a2fc0bda07be154092bc26f4e4fa1de36"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>apply</b> (<a class="el" href="structpos.html">pos</a>&lt; FLOAT &gt; &amp;p)</td></tr>
 <tr class="separator:a2fc0bda07be154092bc26f4e4fa1de36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f205f5f7d9f73dccb09094db477316d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__op.html#a1f205f5f7d9f73dccb09094db477316d">sym_op</a> ()</td></tr>
+<tr class="memitem:a1f205f5f7d9f73dccb09094db477316d"><td class="memItemLeft" align="right" valign="top"><a id="a1f205f5f7d9f73dccb09094db477316d"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__op.html#a1f205f5f7d9f73dccb09094db477316d">sym_op</a> ()</td></tr>
+<tr class="memdesc:a1f205f5f7d9f73dccb09094db477316d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Short constructor: initialises the object with the Identity. <br /></td></tr>
 <tr class="separator:a1f205f5f7d9f73dccb09094db477316d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a991d81306150cd0d83112689b16ee8d4"><td class="memItemLeft" align="right" valign="top"><a id="a991d81306150cd0d83112689b16ee8d4"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>sym_op</b> (Matrix &amp;_rot, Vector &amp;_ax, Vector &amp;_tr, std::vector&lt; int &gt; &amp;_map)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsym__op.html#a991d81306150cd0d83112689b16ee8d4">sym_op</a> (Matrix &amp;_rot, Vector &amp;_ax, Vector &amp;_tr, std::vector&lt; int &gt; &amp;_map)</td></tr>
+<tr class="memdesc:a991d81306150cd0d83112689b16ee8d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Long constructor. <br /></td></tr>
 <tr class="separator:a991d81306150cd0d83112689b16ee8d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -130,44 +135,13 @@ class sym_op&lt; FLOAT &gt;</h3>
 
 <p>Symmetry operations. </p>
 <p>Symmetry operation of the molecular crystal defined by</p><ul>
-<li>Rotation matrix</li>
-<li>Rotation axis position (in fractional coordinates)</li>
-<li>Translation (in fractional coordinates)</li>
-<li>Molecule mapping <pre class="fragment"></pre> </li>
+<li>Matrix rot: 3x3 rotation matrix</li>
+<li>Vector ax: rotation axis position (in fractional coordinates)</li>
+<li>Vector tr: translation (in fractional coordinates)</li>
+<li>std::vector&lt;int&gt; map: molecule mapping</li>
 </ul>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a1f205f5f7d9f73dccb09094db477316d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f205f5f7d9f73dccb09094db477316d">&#9670;&nbsp;</a></span>sym_op()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class FLOAT&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classsym__op.html">sym_op</a>&lt; FLOAT &gt;::<a class="el" href="classsym__op.html">sym_op</a> </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>&lt; Rotation matrix 3x3</p>
-<p>&lt; Rotation axis position (in fractional coordinates)</p>
-<p>&lt; Translation (in fractional coordinates)</p>
-<p>&lt; Molecule mapping. This is a vector of integers where the value of the i-th component indicates the non equivalent molecular position inside the unit cell into which molecule i-th is transformed by the symmetry operation </p>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<p>Note: the molecule mapping vector map is a vector of integers where the value of the i-th component indicates the non equivalent molecular position inside the unit cell into which molecule i-th is transformed by the symmetry operation. </p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/<a class="el" href="sym__op_8h_source.html">sym_op.h</a></li>
 <li>src/sym_op.cpp</li>
 </ul>
