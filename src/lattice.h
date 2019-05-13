@@ -51,22 +51,25 @@ protected:
 	std::vector<std::vector<LATFLOAT> >	CHARGE;			///< Atomic "transition" charges
  	std::vector<Vector>					CELL;			///< Crystal axes
 	std::vector<Vector>					KCELL;			///< Reciprocal lattice vectors
-	LATFLOAT							VCELL;			///< Cell volume
-	std::string							MODE; 			///< Case 'F' -> Finite_sums; case 'S' -> Single_layer_sums; 
-														///< 'M'-> Mixed finite charge dist + Ewald; default -> Ewald_sums
+	LATFLOAT							VCELL;		///< Cell volume
+	std::string							MODE; 		///< Method used to calculate the resonance-interaction matrix	
+											///< Case 'F' -> Finite_sums; case 'S' -> Single_layer_sums; 
+											///< 'M'-> Mixed finite charge dist + Ewald; default -> Ewald_sums
 	std::string							MOL_MOL_INT;	///< Type of interaction "N"= nearest neighbors; 
-														///< "T"=screend distributed transition charge; default=screened_dipole;
-	LATFLOAT							NON_SCR_RADIUS;
-	LATFLOAT							RMAX;			///< Radius of the sphere used for finite sum calculations
+											///< "T"=screend distributed transition charge; default=screened_dipole;
+	LATFLOAT							NON_SCR_RADIUS;	///< Radius beyond which distributed transition charge interactions and dipole interactions are considered screened
+											///< (set it to 0 to always screen interactions and very large to disregard screening)
+	LATFLOAT							RMAX;		///< Radius of the sphere (for MODE='F') or circle (for MODE='S') used for finite sum calculations
+											///< Also used for MODE='M' to calculate corrections to Ewald sums due to finite charge distribution
 	Vector								KLIGHT;         ///< k vector of incident light, used to compute bands at the BZ center 
-														///< in the 3D grid mode, corresponds to hw = |KLIGHT|*1970
+											///< in the 3D grid mode, corresponds to hw = |KLIGHT|*1970
 	std::vector<std::vector<LATFLOAT> > NN_int;			///< Nearest neighbours interactions
 
 // Internal variables
 
 	std::vector<std::vector<pos<LATFLOAT> > >	NN;			///< NN contains the nearest neighbours positions (a 3d vector) 
-															///< for each type of molecule (1st index) and each neighbour (2nd index)
-	Matrix										OtoF;		///< Matrix for transformation from Orthogonal to Fractional coordinates
+										///< for each type of molecule (1st index) and each neighbour (2nd index)
+	Matrix						OtoF;		///< Matrix for transformation from Orthogonal to Fractional coordinates
 
 ////////////////////////////////////////////////////////////////////////////////////
 // Utilities
@@ -100,25 +103,38 @@ protected:
 		out_orth_vec=FracToOrth(frac_vec);
 		return(out_orth_vec);
 	}
-															
+	
+	///< Initialises the lattice from input file
 	void initialize(std::string input_file);
 	
-	// CONTROLLARE SCREENING (anche le nuove cose dello screening parziale) !!!!!!!!!!!!!!!!!!!!
+	///< Calculates the resonance interaction matrix using Ewald sums  
+	///< Returns energy in eV provided distances are in A and dipoles in Debye
+	///< The long-wavelength term is included only if macro_flag!=0
+	///< This is the default function used when MODE is not explicitly set to 'F', 'S' or 'M'
+	///< Note: check screening!
 	Complex	Ewald_sums(Vector k, int alpha, int beta, int flag_macro);
 
+	///< Calculates the resonance interaction matrix using finite sums 
+	///< Used when MODE='F' or MODE='S' 
+	///< Note: flag_2D is not used!
 	Complex Finite_sums(int flag_2D, Vector k, int alpha, int beta);
 
-    ///< This routine DOES NOT exploit inversion symmetry
+    	///< Calculates the correction to Ewald sums due to transition charge distributions replacing single dipoles
+	///< Used when MODE='M'
+	///< Note: this routine DOES NOT exploit inversion symmetry
 	Complex Correction_to_Ewald_sums(Vector k, int alpha, int beta);
 	
 	///< Computes free exciton bands along given directions
 	void compute_FE_bands(std::vector<Vector> dir,  int npoints, int n0,  int n1,  int n2, int flag_macro); 
 	
-	///< Interaction between transition charge distributions 
-    ///< r is the distance between the center of mass of the two molecules
+	///< Calculates the interaction between transition charge distributions 
+    	///< rba is the distance between the center of mass of the two molecules
 	LATFLOAT distributed_charge_interaction(int alpha, int beta, Vector rba); 
 	
-
+	///< Calculates the screened interaction between transition charge distributions 
+    	///< rba is the distance between the center of mass of the two molecules
+	///< e00, e11, e22 are the three diagonal components of the screening dielectric tensor 
+	///< (the non-diagonal components are ignored)
 	LATFLOAT screened_distributed_charge_interaction(int alpha, int beta, Vector rba, 
 													 LATFLOAT e00, LATFLOAT e11, LATFLOAT e22);
 
@@ -241,14 +257,20 @@ public:
 // Public functions
 
 	void print(std::ofstream& log_file); ///< Prints information about the lattice to file
-	std::vector<std::vector<pos<LATFLOAT> > > compute_NN(LATFLOAT rmax, int flag_2D);
+	std::vector<std::vector<pos<LATFLOAT> > > compute_NN(LATFLOAT rmax, int flag_2D); ///< Computes the nearest neighbours for each inequivalent molecule
+											  ///< If flag_2D==1 it considers only NN on the same xy plane
+											  ///< This function accesses NN without get_ functions
+											  ///< Note: check if it exploits all the symmetry operations 
 	//	void set_NN(std::vector<std::vector<pos<LATFLOAT> > > new_NN);	
 	//	void set_lattice_name(std::string _lattice_name) { if (_lattice_name.length() != 0) lattice_name=_lattice_name; };
-	LATFLOAT interaction( int alpha, int beta, Vector dr);	///< Interaction between molecules of type alpha and beta at a distance dr (3D vector)
-	LATFLOAT interaction( int alpha, int nn);				///< Interaction between a molecule of type alpha and its nnth nearest neighboour 
-
-	///< flag_macro is passed to the routine Ewald_sums (if used)
-	Complex compute_Ltilde(Vector kvec, int i, int j, int flag_macro);
+	LATFLOAT interaction( int alpha, int beta, Vector dr);	///< Calculates the interaction between molecules of type alpha and beta at a distance dr (3D vector)
+								///< Using the type of interaction defined by "MOL_MOL_INT"
+	
+	LATFLOAT interaction( int alpha, int nn);		///< Calculates the interaction between a molecule of type alpha and its nn-th nearest neighboour 
+								///< Using the type of interaction defined by "MOL_MOL_INT"	
+	
+	Complex compute_Ltilde(Vector kvec, int i, int j, int flag_macro); ///< Calculates the resonance-interaction matrix using the method defined by "MODE" 
+									   ///< flag_macro is passed to the routine Ewald_sums (if used)
 
 	void computes_lattice_bands(std::string& band_input_file);
 

@@ -54,7 +54,9 @@ public:
 	Vector			get_tr()		const { return(tr); };
 	Matrix			get_rot()		const { return(rot); };
 	
+    /// Applies the symmetry operation to initial position "ini" and stores the results into the final postion "fin"
 	void apply(pos<FLOAT> &ini, pos<FLOAT> &fin);
+    /// Applies the symmetry operation to position "p" and replaces "p" with the final position  
 	void apply(pos<FLOAT> &p);
 
     /// Short constructor: initialises the object with the Identity
